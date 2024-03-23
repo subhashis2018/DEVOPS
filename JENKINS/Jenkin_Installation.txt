@@ -1,0 +1,106 @@
+sudo yum update
+
+-----------------------------------------------------------------------------------------------------
+INSTALL JAVA :
+---------------
+sudo yum install java-17-amazon-corretto -y
+
+java -version
+
+----------------
+UNINSTALL JAVA
+----------------
+rpm -qa | grep java OR rpm -qa | grep jdk
+
+yum remove jdk1.7.0 OR rpm -e jdk1.7.0
+
+
+-----------------------------------------------------------------------------------------------------
+INSTALL JENKINS
+----------------
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+sudo yum install jenkins -y
+
+sudo systemctl enable jenkins
+
+sudo systemctl status jenkins
+sudo systemctl start jenkins
+sudo systemctl stop jenkins
+
+access JENKINS: http://your_amazon_linux_public_instance_ip:8080
+
+-------------------
+UNINSTALL JENKINS
+-------------------
+sudo rm -rf /var/lib/jenkins
+sudo yum remove jenkins
+
+-----------------------------------------------------------------------------------------------------
+INSTALL MAVEN:
+
+wget https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+
+sudo tar xzf apache-maven-3.9.6-bin.tar.gz -C /opt
+
+sudo vi /etc/profile.d/maven.sh
+
+paste
+
+export M2_HOME=/opt/apache-maven-3.9.6
+export PATH=${M2_HOME}/bin:${PATH}
+
+:wq press enter
+
+sudo chmod +x /etc/profile.d/maven.sh
+source /etc/profile.d/maven.sh
+
+verify
+
+mvn -version
+
+
+
+
+
+
+http://mirror.olnevhost.net/pub/apache/maven/binaries/apache-maven-3.9.6-bin.tar.gz
+
+tar xvf apache-maven-3.9.6-bin.tar.gz
+
+export M2_HOME=/usr/local/apache-maven/apache-maven-3.9.6
+
+export M2=$M2_HOME/bin
+
+export PATH=$M2:$PATH
+
+mvn -version
+
+
+
+
+-----------------------------------------------------------------------------------------------------
+INSTALL GIT:
+
+sudo yum install git
+
+sudo yum install rh-git227
+
+sudo git config --global user.name "full name"
+sudo git config --global user.email "email_address"
+
+
+
+
+-----------------------------------------------------------------------------------------------------
+INSTALL PLUGIN:
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------
