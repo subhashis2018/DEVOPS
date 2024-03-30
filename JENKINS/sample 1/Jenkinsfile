@@ -1,22 +1,33 @@
 pipeline {
     agent any
     options {
-        skipStagesAfterUnstable()
+        // Timeout counter starts AFTER agent is allocated
+        timeout(time: 1, unit: 'SECONDS')
     }
     stages {
-        stage('Build') {
+        stage('Compile') {
             steps {
-                echo 'Build'
+                echo 'Compiling .....................'
             }
         }
-        stage('Test'){
+        stage('UnitTesting') {
             steps {
-                echo 'Test'
+                echo 'UnitTesting ...........'
             }
         }
-        stage('Deploy') {
+        stage('JACOCO') {
             steps {
-                echo 'Deploy'
+                echo 'JACOCO Report generating.......................'
+            }
+        }
+        stage('SonarReport') {
+            steps {
+                echo 'SonarReport.............'
+            }
+        }
+        stage('PushToPCF') {
+            steps {
+                echo 'Pushing to PCF foundation...............'
             }
         }
     }
