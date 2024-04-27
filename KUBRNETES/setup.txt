@@ -1,0 +1,7 @@
+eksctl create cluster --name devops --region ap-south-1  --node-type t2.small
+eksctl utils write-kubeconfig --cluster devops --region ap-south-1
+
+eksctl utils write-kubeconfig --cluster yourclustername --region your-region
+
+kubectl create deployment web-app --image=nginx --replicas=2 --port=80
+
