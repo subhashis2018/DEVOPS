@@ -1,0 +1,120 @@
+
+
+
+# Find the Java installation path
+ls /usr/lib/jvm/
+
+# Edit the .bashrc or .profile file
+nano ~/.bashrc
+# or
+nano ~/.profile
+
+# Add the following lines (adjust the path if needed)
+export JAVA_HOME=/usr/lib/jvm/jdk-17-oracle-x64
+export PATH=$JAVA_HOME/bin:$PATH
+
+# Apply the changes
+source ~/.bashrc
+# or
+source ~/.profile
+
+# Verify the JAVA_HOME variable
+echo $JAVA_HOME
+
+
+#INSTALL POSTGRESS
+
+
+# Update package list
+sudo apt-get update
+
+# Install PostgreSQL
+
+sudo apt-get install postgresql postgresql-contrib
+
+# Start and enable PostgreSQL service
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+
+# Switch to PostgreSQL user
+sudo -i -u postgres
+
+# Create PostgreSQL user and database
+createuser sonar
+psql
+ALTER USER sonar WITH ENCRYPTED PASSWORD 'password';
+ALTER USER sonar CREATEDB;
+\q
+createdb -O sonar sonarqube
+exit
+
+# Download and unzip SonarQube
+cd /opt
+sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.9.0.65425.zip
+sudo unzip sonarqube-9.9.0.65425.zip
+sudo mv sonarqube-9.9.0.65425 sonarqube
+
+# Create SonarQube user
+sudo adduser --system --no-create-home --group --disabled-login sonar
+sudo chown -R sonar:sonar /opt/sonarqube
+
+# Configure SonarQube
+sudo nano /opt/sonarqube/conf/sonar.properties
+
+# Create systemd service file for SonarQube
+sudo nano /etc/systemd/system/sonar.service
+
+# Reload systemd and start SonarQube
+sudo systemctl daemon-reload
+sudo systemctl start sonar
+sudo systemctl enable sonar
+sudo systemctl status sonar
+
+
+#UNINSTALL POSTGRESS
+
+# Stop PostgreSQL service
+sudo systemctl stop postgresql
+sudo systemctl status postgresql
+
+# Remove PostgreSQL packages
+sudo apt-get --purge remove postgresql postgresql-client postgresql-contrib
+
+# Clean up remaining configuration files and dependencies
+sudo apt-get autoremove
+sudo apt-get autoclean
+
+# Remove PostgreSQL data directory
+sudo rm -rf /var/lib/postgresql/
+
+# Remove PostgreSQL configuration files
+sudo rm -rf /etc/postgresql/
+
+# Remove PostgreSQL user and group
+sudo deluser postgres
+sudo delgroup postgres
+
+#UNINSTALL SONAR
+
+# Stop the SonarQube service
+sudo systemctl stop sonar
+
+# Remove SonarQube files
+sudo rm -rf /opt/sonarqube/
+
+# Remove SonarQube configuration files
+sudo rm -rf /etc/sonarqube/
+
+# Remove the SonarQube system user and group
+sudo deluser sonar
+sudo delgroup sonar
+
+# Remove SonarQube service configuration
+sudo rm /etc/systemd/system/sonar.service
+
+# Reload systemd daemon
+sudo systemctl daemon-reload
+
+
+
+

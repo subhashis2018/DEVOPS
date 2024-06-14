@@ -14,7 +14,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: "${SPRINGBOOT_REPO}"
+                git branch: 'main', url: "${SPRINGBOOT_REPO}", credentialsId: 'github-credentials'
             }
         }
 
