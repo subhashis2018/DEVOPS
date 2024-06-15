@@ -1,25 +1,29 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven 3.9.6' // Adjust the Maven version as per your installation
+     tools {
+        maven 'maven-3.9.6' // Adjust the Maven version as per your installation
         jdk 'jdk-17' // Adjust the JDK version as per your installation
-    }
+     }
 
     environment {
-        SONARQUBE_SERVER = 'SonarQube Server' // Name of the SonarQube server configured in Jenkins
-        SPRINGBOOT_REPO = 'https://github.com/subhashis2018/springboot_cicd_1.git'
+        GIT_REPO_URL = 'https://github.com/subhashis2018/springboot_cicd_1.git'
+        BRANCH_NAME = 'main'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Clone Repository') {
             steps {
-                git branch: 'main', url: "${SPRINGBOOT_REPO}", credentialsId: 'github-credentials'
+                git branch: "${BRANCH_NAME}",
+                    url: "${GIT_REPO_URL}",
+                    credentialsId: 'your-credentials-id'
             }
         }
-
         stage('Maven Clean') {
             steps {
+                // export JAVA_HOME=/usr/lib/jvm/jdk-17-oracle-x64
+                // export MVN_HOME=/usr/share/maven
+                // export PATH=$JAVA_HOME/bin:$MVN_HOME/bin:$PATH
                 sh 'mvn clean'
             }
         }
@@ -29,41 +33,19 @@ pipeline {
                 sh 'mvn package'
             }
         }
-
-        stage('SonarQube Analysis') {
-            environment {
-                scannerHome = tool 'SonarQube Scanner' // Adjust the tool name as per your configuration
-            }
+        stage('Maven Test') {
             steps {
-                withSonarQubeEnv('SonarQube Server') { // Adjust the server name as per your configuration
-                    sh "${scannerHome}/bin/sonar-scanner"
-                }
-            }
-        }
-
-        stage('Jacoco Code Coverage') {
-            steps {
-                sh 'mvn jacoco:report'
-            }
-        }
-
-        stage('PMD Analysis') {
-            steps {
-                sh 'mvn pmd:pmd'
-            }
-        }
-
-        stage('Publish Reports') {
-            steps {
-                jacoco execPattern: '**/target/*.exec', classPattern: '**/target/classes', sourcePattern: '**/src/main/java'
-                pmd canComputeNew: false, pattern: '**/target/pmd.xml'
+                sh 'mvn test'
             }
         }
     }
 
     post {
-        always {
-            junit '**/target/surefire-reports/*.xml'
+        success {
+            echo 'Build completed successfully!'
+        }
+        failure {
+            echo 'Build failed!'
         }
     }
 }
