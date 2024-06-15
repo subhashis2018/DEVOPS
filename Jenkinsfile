@@ -17,7 +17,7 @@ pipeline {
                 git branch: "${BRANCH_NAME}",
                     url: "${GIT_REPO_URL}",
                     credentialsId: 'github-uname-password'
-            sh 'git clone'
+            sh 'git clone ${GIT_REPO_URL}'
             }
         }
         stage('Maven Clean') {
