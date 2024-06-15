@@ -16,14 +16,12 @@ pipeline {
             steps {
                 git branch: "${BRANCH_NAME}",
                     url: "${GIT_REPO_URL}",
-                    credentialsId: 'your-credentials-id'
+                    credentialsId: 'github-uname-password'
+            sh 'git clone'
             }
         }
         stage('Maven Clean') {
             steps {
-                // export JAVA_HOME=/usr/lib/jvm/jdk-17-oracle-x64
-                // export MVN_HOME=/usr/share/maven
-                // export PATH=$JAVA_HOME/bin:$MVN_HOME/bin:$PATH
                 sh 'mvn clean'
             }
         }
