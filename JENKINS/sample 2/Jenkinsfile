@@ -7,9 +7,12 @@ pipeline {
     }
 
     parameters {
-        string(name:'Env', defaultValue:'Test', description:'version to deploy')
-        booleanParam(name:'executeTests', defaultValue: true, description:'decide to run tc')
-        choice(name:'APPVERSION', choices:['1.1', '1.2', '1.3'])
+        string(name: 'Env', defaultValue: 'Test', description: 'version to deploy')
+        booleanParam(name: 'executeTests', defaultValue: true, description: 'decide to run tc')
+        choice(name: 'APPVERSION', choices: ['1.1', '1.2', '1.3'], description: 'Application Version')
+        choice(name: 'DEPLOYMENT_ENV', choices: ['Dev', 'QA', 'Prod'], description: 'Deployment Environment')
+        booleanParam(name: 'ENABLE_LOGGING', defaultValue: false, description: 'Enable detailed logging')
+        booleanParam(name: 'ENABLE_MONITORING', defaultValue: false, description: 'Enable monitoring')
     }
 
     environment {
@@ -52,14 +55,14 @@ pipeline {
         }
         stage('DEPLOY') {
             input {
-                message 'Select the PLATFFORM to deploy'
+                message 'Select the PLATFORM to deploy'
                 ok 'PLATFORM Selected'
                 parameters {
-                    choice(name:'PLATFORM', choices:['EKS', 'ONPREM_K8s', 'SERVERS'])
+                    choice(name: 'PLATFORM', choices: ['EKS', 'ONPREM_K8s', 'SERVERS'], description: 'Deployment Platform')
                 }
             }
             steps {
-                echo "DEPLOY the code ${params.Env}"
+                echo "DEPLOY the code ${params.Env} to ${params.PLATFORM}"
             }
         }
     }
